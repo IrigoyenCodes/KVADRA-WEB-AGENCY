@@ -158,7 +158,7 @@ const translations = {
     heroSubheading: 'Construimos sitios web y sistemas codificados, hermosos y de alto rendimiento que definen tu presencia digital.',
     servicesTitle: 'Servicios',
     aboutTitle: 'Nosotros',
-    aboutP1: 'Somos un colectivo de diseñadores, desarrolladores y estrategas apasionados por construir experiencias digitales que son tanto funcionales como hermosas. Nuestra filosofía fusiona los principios de minimalismo y utilidad de la Bauhaus con la precisión y lógica del código.',
+    aboutP1: 'Somos una marca emergente fundada en México, integrada por desarrolladores apasionados por crear experiencias digitales funcionales y hermosas. Nuestra filosofía fusiona los principios del diseño con la precisión y lógica del código.',
     aboutP2: 'El resultado es limpio, impactante y construido para durar.',
     dragMe: '(arrástranos)',
     showcaseTitle: 'Casos de Éxito',
