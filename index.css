@@ -1,5 +1,7 @@
 /* --- VARIABLES & RESET --- */
 :root {
+  --font-heading: 'Syne', sans-serif;
+  --font-body: 'Inter', sans-serif;
   --color-primary: #e29547;
   --color-secondary: #cf3716;
   --color-dark-val: #181818;
