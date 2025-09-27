@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Build a memorable brand with Kvadra. We offer brand strategy, logo design, and visual identity services to help your business stand out." />
+    <title>Brand Identity & Logo Design | Kvadra</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "serviceType": "Brand Identity",
+      "provider": {
+        "@type": "Organization",
+        "name": "Kvadra"
+      },
+      "description": "We help you build a cohesive and memorable brand identity that resonates with your audience and sets you apart from the competition.",
+      "areaServed": {
+        "@type": "Country",
+        "name": "MX"
+      }
+    }
+    </script>
+</head>
+<body>
+
+    <header class="site-header service-page-header" data-lang="en">
+        <div class="logo"><a href="index.html">Kvadra</a></div>
+        <nav>
+            <a href="index.html#services">Services</a>
+            <a href="index.html#about">About</a>
+            <a href="index.html#contact">Contact</a>
+            <button class="language-switcher">ES</button>
+        </nav>
+    </header>
+    <header class="site-header service-page-header" data-lang="es" style="display: none;">
+        <div class="logo"><a href="index.html">Kvadra</a></div>
+        <nav>
+            <a href="index.html#services">Servicios</a>
+            <a href="index.html#about">Nosotros</a>
+            <a href="index.html#contact">Contacto</a>
+            <button class="language-switcher">EN</button>
+        </nav>
+    </header>
+
+    <main class="service-page-container">
+        <div data-lang="en">
+            <h1 class="service-title">Brand Identity</h1>
+            <div class="service-content">
+                <p>A strong brand is more than just a logo—it's the heart and soul of your business. It's the story you tell, the values you stand for, and the promise you make to your customers. We help you build a cohesive and memorable brand identity that resonates with your audience and sets you apart from the competition.</p>
+                <p>Our process is collaborative and strategic. We dive deep to understand your business's essence, then translate that into a compelling visual and verbal identity. The result is a consistent brand experience across every touchpoint, from your website to your social media profiles and physical location.</p>
+                
+                <h3>Building Your Brand's Foundation</h3>
+                <p>We believe a successful brand is built on a solid foundation. We work with you to define your brand's core elements, creating a comprehensive system that ensures clarity and consistency as you grow.</p>
+
+                <h3>Our Branding Services Include:</h3>
+                <ul>
+                    <li><strong>Brand Strategy:</strong> We help you define your mission, vision, target audience, and competitive positioning.</li>
+                    <li><strong>Logo Design:</strong> We create a unique and timeless logo that serves as the cornerstone of your visual identity.</li>
+                    <li><strong>Visual Identity System:</strong> We develop a complete visual language, including color palettes, typography, and imagery guidelines.</li>
+                    <li><strong>Brand Guidelines:</strong> We provide a comprehensive style guide that documents how to use your new brand assets, ensuring consistency everywhere.</li>
+                    <li><strong>Messaging & Tone of Voice:</strong> We craft a distinct voice for your brand that connects with your customers on an emotional level.</li>
+                </ul>
+            </div>
+        </div>
+        <div data-lang="es" style="display: none;">
+            <h1 class="service-title">Identidad de Marca</h1>
+            <div class="service-content">
+                <p>Una marca fuerte es más que un simple logotipo: es el corazón y el alma de tu negocio. Es la historia que cuentas, los valores que defiendes y la promesa que haces a tus clientes. Te ayudamos a construir una identidad de marca cohesiva y memorable que resuene con tu audiencia y te diferencie de la competencia.</p>
+                <p>Nuestro proceso es colaborativo y estratégico. Profundizamos para entender la esencia de tu negocio y luego la traducimos en una identidad visual y verbal convincente. El resultado es una experiencia de marca consistente en cada punto de contacto, desde tu sitio web hasta tus perfiles en redes sociales y tu ubicación física.</p>
+                
+                <h3>Construyendo los Cimientos de Tu Marca</h3>
+                <p>Creemos que una marca exitosa se construye sobre una base sólida. Trabajamos contigo para definir los elementos centrales de tu marca, creando un sistema integral que garantiza claridad y consistencia a medida que creces.</p>
+
+                <h3>Nuestros Servicios de Branding Incluyen:</h3>
+                <ul>
+                    <li><strong>Estrategia de Marca:</strong> Te ayudamos a definir tu misión, visión, público objetivo y posicionamiento competitivo.</li>
+                    <li><strong>Diseño de Logotipo:</strong> Creamos un logotipo único y atemporal que sirve como la piedra angular de tu identidad visual.</li>
+                    <li><strong>Sistema de Identidad Visual:</strong> Desarrollamos un lenguaje visual completo, incluyendo paletas de colores, tipografía y directrices de imaginería.</li>
+                    <li><strong>Manual de Marca:</strong> Proporcionamos una guía de estilo completa que documenta cómo usar los nuevos activos de tu marca, asegurando la consistencia en todas partes.</li>
+                    <li><strong>Mensajes y Tono de Voz:</strong> Creamos una voz distintiva para tu marca que conecta con tus clientes a un nivel emocional.</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer-main">
+        <p data-lang="en">© 2024 Kvadra. All rights reserved.</p>
+        <p data-lang="es" style="display: none;">© 2024 Kvadra. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const switchers = document.querySelectorAll('.language-switcher');
+            const contentEN = document.querySelectorAll('[data-lang="en"]');
+            const contentES = document.querySelectorAll('[data-lang="es"]');
+
+            const setLanguage = (lang) => {
+                const url = new URL(window.location);
+                if (lang === 'es') {
+                    contentEN.forEach(el => el.style.display = 'none');
+                    contentES.forEach(el => el.style.display = 'block');
+                    const headerES = document.querySelector('header[data-lang="es"]');
+                    if (headerES) headerES.style.display = 'grid';
+                    url.searchParams.set('lang', 'es');
+                } else {
+                    contentES.forEach(el => el.style.display = 'none');
+                    contentEN.forEach(el => el.style.display = 'block');
+                    const headerEN = document.querySelector('header[data-lang="en"]');
+                    if(headerEN) headerEN.style.display = 'grid';
+                    url.searchParams.set('lang', 'en');
+                }
+                window.history.replaceState({}, '', url);
+                document.documentElement.lang = lang;
+            };
+
+            const urlParams = new URLSearchParams(window.location.search);
+            let currentLang = urlParams.get('lang') === 'es' ? 'es' : 'en';
+            setLanguage(currentLang);
+
+            switchers.forEach(switcher => {
+                switcher.addEventListener('click', () => {
+                    currentLang = currentLang === 'en' ? 'es' : 'en';
+                    setLanguage(currentLang);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

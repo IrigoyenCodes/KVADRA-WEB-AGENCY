@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://your-domain.com/index.html</loc>
+    <lastmod>2024-05-21</lastmod>
+    <priority>1.00</priority>
+  </url>
+  <url>
+    <loc>https://your-domain.com/seo-digital-strategy.html</loc>
+    <lastmod>2024-05-21</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://your-domain.com/enterprise-web-systems.html</loc>
+    <lastmod>2024-05-21</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://your-domain.com/custom-ui-ux-design.html</loc>
+    <lastmod>2024-05-21</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://your-domain.com/brand-identity.html</loc>
+    <lastmod>2024-05-21</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://your-domain.com/performance-optimization.html</loc>
+    <lastmod>2024-05-21</lastmod>
+    <priority>0.80</priority>
+  </url>
+</urlset>
