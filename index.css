@@ -190,6 +190,11 @@ a, button, input, textarea {
   z-index: 3;
 }
 
+.goo-svg g {
+    filter: url(#gooey);
+}
+
+
 /* --- GENERAL LAYOUT & TYPOGRAPHY --- */
 .smooth-scroll-container {
     position: fixed;
@@ -855,6 +860,10 @@ html[data-theme='dark'] .theme-switcher .moon {
         line-height: 1.5;
         gap: 1rem;
         letter-spacing: -0.01em;
+    }
+    
+    .goo-svg g {
+        filter: url(#gooey-mobile);
     }
 
     .site-header {

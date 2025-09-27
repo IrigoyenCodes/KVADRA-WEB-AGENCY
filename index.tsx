@@ -399,10 +399,14 @@ const Hero = ({ t, lang }) => {
             
             <svg className="goo-svg">
                 <mask id="mask">
-                    <g ref={wrapperRef} filter="url(#gooey)"></g>
+                    <g ref={wrapperRef}></g>
                 </mask>
                 <filter id="gooey">
                     <feGaussianBlur in="SourceGraphic" stdDeviation="25" />
+                    <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -7" result="goo" />
+                </filter>
+                <filter id="gooey-mobile">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="15" />
                     <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -7" result="goo" />
                 </filter>
             </svg>
