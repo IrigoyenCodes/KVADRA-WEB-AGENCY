@@ -282,9 +282,11 @@ type Translation = typeof translations['en'];
 type Language = 'en' | 'es';
 
 const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
+    const heroSectionRef = useRef<HTMLElement>(null);
     const wrapperRef = useRef<SVGGElement>(null);
     const mouse = useRef({ x: 0, y: 0, smoothX: 0, smoothY: 0, diff: 0 }).current;
     const particles = useRef<Particle[]>([]).current;
+    const isMouseInHero = useRef(false);
     const taglineRef = useRef(null);
     const codedWordRef = useRef(null);
     
@@ -297,13 +299,22 @@ const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
         };
         window.addEventListener('mousemove', onMouseMove);
 
+        const heroElement = heroSectionRef.current;
+        const onMouseEnter = () => isMouseInHero.current = true;
+        const onMouseLeave = () => isMouseInHero.current = false;
+
+        if (heroElement) {
+            heroElement.addEventListener('mouseenter', onMouseEnter);
+            heroElement.addEventListener('mouseleave', onMouseLeave);
+        }
+
         const render = () => {
             mouse.smoothX += (mouse.x - mouse.smoothX) * 0.1;
             mouse.smoothY += (mouse.y - mouse.smoothY) * 0.1;
             mouse.diff = Math.hypot(mouse.x - mouse.smoothX, mouse.y - mouse.smoothY);
 
-            // Emit new particle
-            if (mouse.diff > 0.1 && wrapperRef.current) {
+            // Emit new particle only when mouse is moving and inside the hero section
+            if (mouse.diff > 0.1 && wrapperRef.current && isMouseInHero.current) {
                 const size = Math.min(mouse.diff * 1.5, 150);
                 particles.push(new Particle(mouse.smoothX, mouse.smoothY, size, wrapperRef.current, Date.now()));
             }
@@ -327,6 +338,10 @@ const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
 
         return () => {
             window.removeEventListener('mousemove', onMouseMove);
+             if (heroElement) {
+                heroElement.removeEventListener('mouseenter', onMouseEnter);
+                heroElement.removeEventListener('mouseleave', onMouseLeave);
+            }
             cancelAnimationFrame(animationFrameId);
             particles.forEach(p => p.remove());
             particles.length = 0;
@@ -384,7 +399,7 @@ const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
     const subheadingParts = t.heroSubheading.split(wordToAnimate);
 
     return (
-        <section className="hero">
+        <section className="hero" ref={heroSectionRef}>
             <div className="hero-background"></div>
             <div className="hero-overlay">
                 <div className="hero-content">
