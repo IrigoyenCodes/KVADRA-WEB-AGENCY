@@ -399,11 +399,11 @@ const Hero = ({ t, lang }) => {
             
             <svg className="goo-svg" aria-hidden="true">
                 <defs>
-                    {/* Conditional filter based on screen size */}
+                    {/* A single high-quality filter for desktop. Disabled on mobile via CSS for performance. */}
                     <filter id="gooey">
                         <feGaussianBlur 
                             in="SourceGraphic" 
-                            stdDeviation={window.innerWidth < 768 ? "10" : "25"} 
+                            stdDeviation="25" 
                         />
                         <feColorMatrix 
                             type="matrix" 
@@ -551,6 +551,11 @@ const Services = ({ t, lang }) => {
                                             {service.tags[lang].map(tag => (
                                                 <span key={tag} className="service-tag">{tag}</span>
                                             ))}
+                                        </div>
+                                        <div className="service-cta-container">
+                                            <a href={`/${service.id}.html?lang=${lang}`} className="service-learn-more">
+                                                {t.learnMore} &rarr;
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -961,9 +966,19 @@ const App = () => {
     const [language, setLanguage] = useState('en');
     const [theme, setTheme] = useState('light');
     const mainRef = useRef(null);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     
     const [lastYPos, setLastYPos] = useState(0);
     const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -1013,21 +1028,25 @@ const App = () => {
 
     const t = translations[language];
 
+    const SiteContent = () => (
+        <>
+            <main ref={mainRef}>
+                <Hero t={t} lang={language} />
+                <Services t={t} lang={language} />
+                <About t={t} />
+                <ClientShowcase t={t} lang={language} />
+                <IdeaGenerator t={t} lang={language} />
+                <Contact t={t} />
+            </main>
+            <Footer t={t} />
+        </>
+    );
+
     return (
         <>
             <CustomCursor />
             <Header t={t} onLanguageToggle={handleLanguageToggle} lang={language} onNavClick={handleNavClick} theme={theme} onThemeToggle={handleThemeToggle} isVisible={isHeaderVisible} />
-            <SmoothScroll>
-                <main ref={mainRef}>
-                    <Hero t={t} lang={language} />
-                    <Services t={t} lang={language} />
-                    <About t={t} />
-                    <ClientShowcase t={t} lang={language} />
-                    <IdeaGenerator t={t} lang={language} />
-                    <Contact t={t} />
-                </main>
-                <Footer t={t} />
-            </SmoothScroll>
+            {isMobile ? <SiteContent /> : <SmoothScroll><SiteContent /></SmoothScroll>}
         </>
     );
 };
