@@ -397,18 +397,23 @@ const Hero = ({ t, lang }) => {
                 </div>
             </div>
             
-            <svg className="goo-svg">
-                <mask id="mask">
-                    <g ref={wrapperRef}></g>
-                </mask>
-                <filter id="gooey">
-                    <feGaussianBlur in="SourceGraphic" stdDeviation="25" />
-                    <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -7" result="goo" />
-                </filter>
-                <filter id="gooey-mobile">
-                    <feGaussianBlur in="SourceGraphic" stdDeviation="15" />
-                    <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -7" result="goo" />
-                </filter>
+            <svg className="goo-svg" aria-hidden="true">
+                <defs>
+                    {/* Conditional filter based on screen size */}
+                    <filter id="gooey">
+                        <feGaussianBlur 
+                            in="SourceGraphic" 
+                            stdDeviation={window.innerWidth < 768 ? "10" : "25"} 
+                        />
+                        <feColorMatrix 
+                            type="matrix" 
+                            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -7" 
+                        />
+                    </filter>
+                    <mask id="mask">
+                        <g ref={wrapperRef}></g>
+                    </mask>
+                </defs>
             </svg>
         </section>
     );
