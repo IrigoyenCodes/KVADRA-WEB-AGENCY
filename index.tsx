@@ -76,7 +76,7 @@ class Particle {
     el: SVGCircleElement;
     size: number;
     startTime: number;
-    lifespan: number = 18000; // 18 seconds
+    lifespan: number = 5000; // 18 seconds
 
     constructor(x: number, y: number, size: number, wrapper: SVGElement, startTime: number) {
         this.size = size;
@@ -95,7 +95,7 @@ class Particle {
         const progress = elapsed / this.lifespan;
 
         // Animation: grow fast, then shrink slowly
-        const peakTime = 0.1; // time to reach full size
+        const peakTime = 0.01; // time to reach full size
         let currentSize;
         if (progress < peakTime) {
             currentSize = this.size * (progress / peakTime);
@@ -277,7 +277,11 @@ const clientData = [
 ];
 
 // --- React Components ---
-const Hero = ({ t, lang }) => {
+// FIX: Add types for component props to resolve TypeScript errors and improve maintainability.
+type Translation = typeof translations['en'];
+type Language = 'en' | 'es';
+
+const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
     const wrapperRef = useRef<SVGGElement>(null);
     const mouse = useRef({ x: 0, y: 0, smoothX: 0, smoothY: 0, diff: 0 }).current;
     const particles = useRef<Particle[]>([]).current;
@@ -334,7 +338,7 @@ const Hero = ({ t, lang }) => {
 
         // TAGLINE ANIMATION
         const taglineEl = taglineRef.current;
-        let taglineTl;
+        let taglineTl: any;
         if (taglineEl && t.heroLine3Options?.length > 1) {
             taglineTl = gsap.timeline({ repeat: -1 });
             const cycleOptions = [...t.heroLine3Options.slice(1), t.heroLine3Options[0]];
@@ -417,9 +421,17 @@ const Hero = ({ t, lang }) => {
             </svg>
         </section>
     );
-};
+});
 
-const Header = ({ t, onLanguageToggle, lang, onNavClick, theme, onThemeToggle, isVisible }) => (
+const Header = ({ t, onLanguageToggle, lang, onNavClick, theme, onThemeToggle, isVisible }: {
+    t: Translation;
+    onLanguageToggle: () => void;
+    lang: Language;
+    onNavClick: (selector: string) => void;
+    theme: string;
+    onThemeToggle: () => void;
+    isVisible: boolean;
+}) => (
     <header className={`site-header ${!isVisible ? 'site-header--hidden' : ''}`}>
         <div className="header-controls">
             <button onClick={onThemeToggle} className="theme-switcher" aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
@@ -441,9 +453,9 @@ const Header = ({ t, onLanguageToggle, lang, onNavClick, theme, onThemeToggle, i
     </header>
 );
 
-const Services = ({ t, lang }) => {
+const Services = ({ t, lang }: { t: Translation; lang: Language }) => {
     const servicesTitleRef = useRef(null);
-    const [openServiceId, setOpenServiceId] = useState(servicesData[0].id);
+    const [openServiceId, setOpenServiceId] = useState<string | null>(servicesData[0].id);
     const iconRefs = useRef<{ [key: string]: SVGLineElement | null }>({});
 
     useEffect(() => {
@@ -552,11 +564,6 @@ const Services = ({ t, lang }) => {
                                                 <span key={tag} className="service-tag">{tag}</span>
                                             ))}
                                         </div>
-                                        <div className="service-cta-container">
-                                            <a href={`/${service.id}.html?lang=${lang}`} className="service-learn-more">
-                                                {t.learnMore} &rarr;
-                                            </a>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -575,11 +582,11 @@ const initialShapes = [
     { id: 3, className: 'shape shape-3', style: { top: '70%', left: '75%' } },
 ];
 
-const About = ({ t }) => {
+const About = ({ t }: { t: Translation }) => {
     const aboutTitleRef = useRef(null);
     const [shapes, setShapes] = useState(initialShapes);
-    const [draggedShape, setDraggedShape] = useState({ index: null, offsetX: 0, offsetY: 0 });
-    const visualsRef = useRef(null);
+    const [draggedShape, setDraggedShape] = useState<{ index: number | null, offsetX: number, offsetY: number }>({ index: null, offsetX: 0, offsetY: 0 });
+    const visualsRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const titleEl = aboutTitleRef.current;
@@ -602,7 +609,7 @@ const About = ({ t }) => {
         }
     }, [t.aboutTitle]);
 
-    const handleMouseDown = (e, index) => {
+    const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
         e.preventDefault();
         const shapeEl = e.currentTarget;
         const shapeRect = shapeEl.getBoundingClientRect();
@@ -615,7 +622,7 @@ const About = ({ t }) => {
     };
 
     useEffect(() => {
-        const handleMouseMove = (e) => {
+        const handleMouseMove = (e: MouseEvent) => {
             if (draggedShape.index === null || !visualsRef.current) return;
             
             const containerRect = visualsRef.current.getBoundingClientRect();
@@ -681,7 +688,7 @@ const About = ({ t }) => {
     );
 };
 
-const ClientShowcase = ({ t, lang }) => {
+const ClientShowcase = ({ t, lang }: { t: Translation; lang: Language }) => {
     const showcaseTitleRef = useRef(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
@@ -783,15 +790,15 @@ const ClientShowcase = ({ t, lang }) => {
     );
 };
 
-const IdeaGenerator = ({ t, lang }) => {
+const IdeaGenerator = ({ t, lang }: { t: Translation; lang: Language }) => {
     const [bizType, setBizType] = useState('');
     const [goal, setGoal] = useState('');
-    const [ideas, setIdeas] = useState([]);
+    const [ideas, setIdeas] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!bizType || !goal) {
             setError(t.ideaValidationError); // Simple validation
@@ -864,7 +871,7 @@ const IdeaGenerator = ({ t, lang }) => {
 };
 
 
-const Contact = ({ t }) => (
+const Contact = ({ t }: { t: Translation }) => (
     <section id="contact" className="content-section contact-section">
         <h2 className="section-title">{t.contactTitle}</h2>
         <p className="contact-subheading">{t.contactSubheading}</p>
@@ -887,7 +894,7 @@ const Contact = ({ t }) => (
     </section>
 );
 
-const Footer = ({ t }) => (
+const Footer = ({ t }: { t: Translation }) => (
     <footer className="site-footer-main">
         <p>{t.footerText}</p>
     </footer>
@@ -961,9 +968,25 @@ const CustomCursor = () => {
     );
 };
 
+// FIX: Move SiteContent outside of the App component to prevent re-renders on state change.
+// This is critical for preventing the Hero animation from restarting on scroll.
+const SiteContent = React.memo(React.forwardRef<HTMLElement, { t: Translation, lang: Language }>(({ t, lang }, ref) => (
+    <>
+        <main ref={ref}>
+            <Hero t={t} lang={lang} />
+            <Services t={t} lang={lang} />
+            <About t={t} />
+            <ClientShowcase t={t} lang={lang} />
+            <IdeaGenerator t={t} lang={lang} />
+            <Contact t={t} />
+        </main>
+        <Footer t={t} />
+    </>
+)));
+
 
 const App = () => {
-    const [language, setLanguage] = useState('en');
+    const [language, setLanguage] = useState<Language>('en');
     const [theme, setTheme] = useState('light');
     const mainRef = useRef(null);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -981,18 +1004,26 @@ const App = () => {
     }, []);
 
     useEffect(() => {
+        if (isMobile) {
+            // On mobile, the header is always visible and doesn't hide on scroll.
+            setIsHeaderVisible(true);
+            return; // Don't attach the scroll listener.
+        }
+
+        // On desktop, attach the scroll listener to hide/show the header.
         const handleScroll = () => {
             const currentYPos = window.scrollY;
-            const isScrollingUp = currentYPos < lastYPos;
-
-            setIsHeaderVisible(isScrollingUp || currentYPos < 100);
-            setLastYPos(currentYPos);
+            // Using a function with the state setter to get the latest lastYPos without adding it as a dependency.
+            setLastYPos(prevYPos => {
+                const isScrollingUp = currentYPos < prevYPos;
+                setIsHeaderVisible(isScrollingUp || currentYPos < 100);
+                return currentYPos;
+            });
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
-
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [lastYPos]);
+    }, [isMobile]); // Re-run this effect only when the device type changes.
 
     useEffect(() => {
         document.documentElement.lang = language;
@@ -1010,7 +1041,7 @@ const App = () => {
         setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
     };
     
-    const handleNavClick = (selector) => {
+    const handleNavClick = (selector: string) => {
         const element = document.querySelector(selector);
         // FIX: Cast querySelector result to HTMLElement to access offsetHeight property.
         const header = document.querySelector<HTMLElement>('.site-header');
@@ -1028,25 +1059,14 @@ const App = () => {
 
     const t = translations[language];
 
-    const SiteContent = () => (
-        <>
-            <main ref={mainRef}>
-                <Hero t={t} lang={language} />
-                <Services t={t} lang={language} />
-                <About t={t} />
-                <ClientShowcase t={t} lang={language} />
-                <IdeaGenerator t={t} lang={language} />
-                <Contact t={t} />
-            </main>
-            <Footer t={t} />
-        </>
-    );
-
     return (
         <>
             <CustomCursor />
             <Header t={t} onLanguageToggle={handleLanguageToggle} lang={language} onNavClick={handleNavClick} theme={theme} onThemeToggle={handleThemeToggle} isVisible={isHeaderVisible} />
-            {isMobile ? <SiteContent /> : <SmoothScroll><SiteContent /></SmoothScroll>}
+            {isMobile ? 
+                <SiteContent ref={mainRef} t={t} lang={language} /> : 
+                <SmoothScroll><SiteContent ref={mainRef} t={t} lang={language} /></SmoothScroll>
+            }
         </>
     );
 };

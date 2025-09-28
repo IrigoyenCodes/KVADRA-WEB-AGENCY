@@ -447,25 +447,6 @@ html[data-theme='dark'] .theme-switcher .moon {
     color: var(--text-secondary);
 }
 
-.service-cta-container {
-    margin-top: 1.5rem;
-    text-align: right;
-}
-
-.service-learn-more {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    color: var(--color-primary);
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    letter-spacing: 0.05em;
-    transition: color 0.3s ease;
-}
-
-.service-learn-more:hover {
-    color: var(--color-secondary);
-}
-
 /* --- ABOUT SECTION --- */
 .about-section {
     overflow: hidden;
