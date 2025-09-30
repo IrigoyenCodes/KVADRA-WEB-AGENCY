@@ -124,6 +124,7 @@ const translations = {
     heroLine2: 'Systems for Digital Recognition',
     heroLine3Options: ['Creative Development', 'User-Centric Design', 'Performance Driven'],
     heroSubheading: 'We build beautiful, high-performance coded websites and systems that define your digital presence.',
+    heroInteractHint: '(hover your cursor or touch the screen)',
     servicesTitle: 'Services',
     aboutTitle: 'About Us',
     aboutP1: 'We are an emerging brand founded in Mexico, consisting of developers passionate about building digital experiences that are both functional and beautiful. Our philosophy merges design principles with the precision and logic of code.',
@@ -156,6 +157,7 @@ const translations = {
     heroLine2: 'Sistemas para Reconocimiento Digital',
     heroLine3Options: ['Desarrollo Creativo', 'Diseño Centrado en Usuario', 'Rendimiento Excepcional'],
     heroSubheading: 'Construimos sitios web y sistemas codificados, hermosos y de alto rendimiento que definen tu presencia digital.',
+    heroInteractHint: '(pasa el cursor o toca la pantalla)',
     servicesTitle: 'Servicios',
     aboutTitle: 'Nosotros',
     aboutP1: 'Somos una marca emergente fundada en México, integrada por desarrolladores apasionados por crear experiencias digitales funcionales y hermosas. Nuestra filosofía fusiona los principios del diseño con la precisión y lógica del código.',
@@ -297,16 +299,27 @@ const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
             mouse.x = e.clientX;
             mouse.y = e.clientY;
         };
-        window.addEventListener('mousemove', onMouseMove);
+        const onTouchMove = (e: TouchEvent) => {
+            if (e.touches.length > 0) {
+                mouse.x = e.touches[0].clientX;
+                mouse.y = e.touches[0].clientY;
+            }
+        };
+        window.addEventListener('mousemove', onMouseMove, { passive: true });
+        window.addEventListener('touchmove', onTouchMove, { passive: true });
 
         const heroElement = heroSectionRef.current;
         const onMouseEnter = () => isMouseInHero.current = true;
         const onMouseLeave = () => isMouseInHero.current = false;
+        const onTouchStart = () => isMouseInHero.current = true;
+        const onTouchEnd = () => isMouseInHero.current = false;
 
         if (heroElement) {
             heroElement.addEventListener('mouseenter', onMouseEnter);
             heroElement.addEventListener('mouseleave', onMouseLeave);
+            heroElement.addEventListener('touchstart', onTouchStart, { passive: true });
         }
+        window.addEventListener('touchend', onTouchEnd);
 
         const render = () => {
             mouse.smoothX += (mouse.x - mouse.smoothX) * 0.1;
@@ -338,9 +351,12 @@ const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
 
         return () => {
             window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('touchmove', onTouchMove);
+            window.removeEventListener('touchend', onTouchEnd);
              if (heroElement) {
                 heroElement.removeEventListener('mouseenter', onMouseEnter);
                 heroElement.removeEventListener('mouseleave', onMouseLeave);
+                heroElement.removeEventListener('touchstart', onTouchStart);
             }
             cancelAnimationFrame(animationFrameId);
             particles.forEach(p => p.remove());
@@ -415,6 +431,8 @@ const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
                     </p>
                 </div>
             </div>
+            
+            <p className="hero-interact-hint">{t.heroInteractHint}</p>
             
             <svg className="goo-svg" aria-hidden="true">
                 <defs>
@@ -985,9 +1003,10 @@ const CustomCursor = () => {
 
 // FIX: Move SiteContent outside of the App component to prevent re-renders on state change.
 // This is critical for preventing the Hero animation from restarting on scroll.
-const SiteContent = React.memo(React.forwardRef<HTMLElement, { t: Translation, lang: Language }>(({ t, lang }, ref) => (
-    <>
-        <main ref={ref}>
+// FIX: Wrap SiteContent in a div and attach the forwarded ref to it. This resolves a subtle TypeScript error by providing a clearer component boundary for the parent `SmoothScroll` component.
+const SiteContent = React.memo(React.forwardRef<HTMLDivElement, { t: Translation, lang: Language }>(({ t, lang }, ref) => (
+    <div ref={ref}>
+        <main>
             <Hero t={t} lang={lang} />
             <Services t={t} lang={lang} />
             <About t={t} />
@@ -996,14 +1015,15 @@ const SiteContent = React.memo(React.forwardRef<HTMLElement, { t: Translation, l
             <Contact t={t} />
         </main>
         <Footer t={t} />
-    </>
+    </div>
 )));
 
 
 const App = () => {
     const [language, setLanguage] = useState<Language>('en');
     const [theme, setTheme] = useState('light');
-    const mainRef = useRef(null);
+    // FIX: Explicitly type the ref to match the element it will be attached to (`<div>`). `useRef(null)` creates an incompatible ref type for a forwarded ref expecting an HTMLElement.
+    const mainRef = useRef<HTMLDivElement>(null);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     
     const [lastYPos, setLastYPos] = useState(0);
