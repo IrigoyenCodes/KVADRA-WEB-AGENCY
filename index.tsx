@@ -311,13 +311,11 @@ const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
         const heroElement = heroSectionRef.current;
         const onMouseEnter = () => isMouseInHero.current = true;
         const onMouseLeave = () => isMouseInHero.current = false;
-        const onTouchStart = () => isMouseInHero.current = true;
         const onTouchEnd = () => isMouseInHero.current = false;
 
         if (heroElement) {
             heroElement.addEventListener('mouseenter', onMouseEnter);
             heroElement.addEventListener('mouseleave', onMouseLeave);
-            heroElement.addEventListener('touchstart', onTouchStart, { passive: true });
         }
         window.addEventListener('touchend', onTouchEnd);
 
@@ -356,7 +354,6 @@ const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
              if (heroElement) {
                 heroElement.removeEventListener('mouseenter', onMouseEnter);
                 heroElement.removeEventListener('mouseleave', onMouseLeave);
-                heroElement.removeEventListener('touchstart', onTouchStart);
             }
             cancelAnimationFrame(animationFrameId);
             particles.forEach(p => p.remove());
