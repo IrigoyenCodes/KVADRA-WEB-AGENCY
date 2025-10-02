@@ -876,7 +876,7 @@ html[data-theme='dark'] .theme-switcher .moon {
     }
     
     .goo-svg g {
-        filter: none; /* Disable expensive gooey effect on mobile for performance */
+        filter: url(#gooey-mobile); /* Use a lighter gooey effect on mobile for performance */
     }
 
     .site-header {

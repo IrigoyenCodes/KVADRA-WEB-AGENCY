@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -433,7 +434,7 @@ const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
             
             <svg className="goo-svg" aria-hidden="true">
                 <defs>
-                    {/* A single high-quality filter for desktop. Disabled on mobile via CSS for performance. */}
+                    {/* High-quality filter for desktop */}
                     <filter id="gooey">
                         <feGaussianBlur 
                             in="SourceGraphic" 
@@ -442,6 +443,17 @@ const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
                         <feColorMatrix 
                             type="matrix" 
                             values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -7" 
+                        />
+                    </filter>
+                    {/* A lighter, more performant filter for mobile devices */}
+                    <filter id="gooey-mobile">
+                        <feGaussianBlur
+                            in="SourceGraphic"
+                            stdDeviation="15"
+                        />
+                        <feColorMatrix
+                            type="matrix"
+                            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 25 -6"
                         />
                     </filter>
                     <mask id="mask">
@@ -1097,6 +1109,7 @@ const App = () => {
             <Header t={t} onLanguageToggle={handleLanguageToggle} lang={language} onNavClick={handleNavClick} theme={theme} onThemeToggle={handleThemeToggle} isVisible={isHeaderVisible} />
             {isMobile ? 
                 <SiteContent ref={mainRef} t={t} lang={language} /> : 
+                // FIX: The SmoothScroll component requires a `children` prop. The SiteContent component must be nested within SmoothScroll to be passed as a child, resolving the "Property 'children' is missing" error.
                 <SmoothScroll><SiteContent ref={mainRef} t={t} lang={language} /></SmoothScroll>
             }
         </>
