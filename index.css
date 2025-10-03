@@ -533,7 +533,7 @@ html[data-theme='dark'] .theme-switcher .moon {
     background-color: var(--client-list-bg);
     color: var(--client-list-text);
     font-size: max(10px, 1vw);
-    position: center;
+    max-width: none;
 }
 
 .client-list-section a {
@@ -565,6 +565,8 @@ html[data-theme='dark'] .theme-switcher .moon {
   width: 100%;
   height: 100%;
   display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .main-col {
@@ -756,6 +758,9 @@ html[data-theme='dark'] .theme-switcher .moon {
 .carousel-image-container {
     width: 100%;
     height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .client-carousel .image {
@@ -795,9 +800,8 @@ html[data-theme='dark'] .theme-switcher .moon {
 
 
 .paragraph {
-  text-align: justify;
   margin-bottom: 0;
-  font-size: 1.3rem;
+  font-size: 1.2em;
   line-height: 1.5;
   font-family: var(--font-body);
 }
@@ -821,7 +825,7 @@ html[data-theme='dark'] .theme-switcher .moon {
 }
 
 .button.text[data-overlay="close"] {
-  font-size: 1.5em;
+  font-size: 1.8rem;
   text-transform: uppercase;
   font-weight: 500;
   letter-spacing: 0.05em;
@@ -1204,6 +1208,7 @@ html[data-theme='dark'] .theme-switcher .moon {
     .overlay-col.col-left {
         max-width: 100%;
         order: 2;
+        align-items: center;
     }
     .overlay-col.col-right {
         max-width: 100%;
@@ -1216,11 +1221,15 @@ html[data-theme='dark'] .theme-switcher .moon {
         padding-bottom: 8em; /* Reduced padding for mobile */
     }
     .paragraph {
-        font-size: 1.1em;
+        font-size: 1em;
         text-align: justify; /* Improved readability on mobile */
     }
 
     .overlay-nav {
         justify-content: center;
+    }
+
+    .overlay-nav [data-overlay="nav-item"]:first-of-type {
+        display: none;
     }
 }
