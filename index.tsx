@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -6,6 +5,9 @@ import { GoogleGenAI } from "@google/genai";
 declare const gsap: any;
 // FIX: Declare TextPlugin to inform TypeScript that it exists in the global scope.
 declare const TextPlugin: any;
+declare const Flip: any;
+declare const CustomEase: any;
+
 
 // --- Smooth Scroll Logic ---
 const SmoothScroll = ({ children }: { children: React.ReactNode }) => {
@@ -77,7 +79,7 @@ class Particle {
     el: SVGCircleElement;
     size: number;
     startTime: number;
-    lifespan: number = 5000; // 18 seconds
+    lifespan: number = 3000; // 18 seconds
 
     constructor(x: number, y: number, size: number, wrapper: SVGElement, startTime: number) {
         this.size = size;
@@ -132,8 +134,8 @@ const translations = {
     aboutP2: 'The result is clean, impactful, and built to last.',
     dragMe: '(drag us)',
     showcaseTitle: 'Client Showcase',
-    showcasePrev: 'Previous testimonial',
-    showcaseNext: 'Next testimonial',
+    showcasePrev: 'Previous image',
+    showcaseNext: 'Next image',
     ideaTitle: 'Spark an Idea',
     ideaSubheading: 'Not sure where to start? Let our AI brainstorm for you.',
     ideaBizTypePlaceholder: 'e.g., Pizzeria, Coffee Shop...',
@@ -165,8 +167,8 @@ const translations = {
     aboutP2: 'El resultado es limpio, impactante y construido para durar.',
     dragMe: '(arrástranos)',
     showcaseTitle: 'Casos de Éxito',
-    showcasePrev: 'Testimonio anterior',
-    showcaseNext: 'Siguiente testimonio',
+    showcasePrev: 'Imagen anterior',
+    showcaseNext: 'Siguiente imagen',
     ideaTitle: 'Genera una Idea',
     ideaSubheading: '¿No estás seguro por dónde empezar? Deja que nuestra IA piense por ti.',
     ideaBizTypePlaceholder: 'Ej. Pizzería, Cafetería...',
@@ -252,30 +254,39 @@ const servicesData = [
 const clientData = [
     {
         name: 'KOR Activewear',
-        title: { en: 'Owner', es: 'Propietario' },
         quote: { 
-            en: 'Kvadra created the whole website and management system for our brand, they implemented an interactive interface to change and edit our website in real time.',
-            es: 'Kvadra creó todo el sitio web y el sistema de gestión para nuestra marca, implementaron una interfaz interactiva para cambiar y editar nuestro sitio web en tiempo real.'
+            en: 'We created the whole e-commerce website for KOR, an emerging sportswear brand, implemented an interactive interface for the empoyees/director to be able to edit the whole database from their phone.',
+            es: 'Creamos todo el sitio web de ecommerce para KOR, una marca de ropa deportiva emergente, implementamos una interfaz interactiva para que los empleados/directores puedan editar toda la base de datos desde su teléfono'
         },
-        logo: '🍽️'
+        images: [
+            'https://images.unsplash.com/photo-1549476464-373921717541?q=80&w=1887&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1517809292312-5b8b1b01de53?q=80&w=1887&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1614272993243-8b9e69b4226e?q=80&w=1887&auto=format&fit=crop'
+        ]
     },
     {
-        name: 'FOCCA Restaurant',
-        title: { en: 'Founder', es: 'Fundadores' },
+        name: 'OVA Architects',
         quote: { 
-            en: 'Working with them with our brand website was amazing and incredibly fast, before we even made a call they already had a working mockup for the website.',
-            es: 'Trabajar con ellos en el sitio web de nuestra marca fue increíble e increíblemente rápido, antes de que siquiera hiciéramos una llamada, ya tenían una maqueta funcional del sitio web.'
+            en: 'We designed and developed an elegant, high-end website to showcase their architectural portfolio, driving a 32% increase in qualified client leads and elevating their brand presence in the luxury market.',
+            es: 'Diseñamos y desarrollamos un sitio web elegante y premium para exhibir su portafolio arquitectónico, generando un aumento del 32% en clientes potenciales calificados y elevando su presencia de marca en el mercado de lujo.'
         },
-        logo: '🌿'
+        images: [
+            'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1974&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1517841380369-114d2a13e2d6?q=80&w=1974&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1552561435-24285ee1105b?q=80&w=1974&auto=format&fit=crop'
+        ]
     },
     {
         name: 'Innovate Logistics',
-        title: { en: 'Operations Manager', es: 'Gerente de Operaciones' },
         quote: { 
-            en: 'The custom inventory management system they developed is a game-changer. It has saved us countless hours and reduced errors significantly. Highly recommended.',
-            es: 'El sistema de gestión de inventario personalizado que desarrollaron cambió las reglas del juego. Nos ha ahorrado incontables horas y ha reducido los errores significativamente. Muy recomendados.'
+            en: 'We developed a custom inventory management system that transformed their operations—reducing processing time by 60% and virtually eliminating manual errors.',
+            es: 'Desarrollamos un sistema de gestión de inventario personalizado que transformó sus operaciones—reduciendo el tiempo de procesamiento en un 60% y prácticamente eliminando errores manuales.'
         },
-        logo: '📦'
+        images: [
+            'https://images.unsplash.com/photo-1586528116311-06924151d14a?q=80&w=2070&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1573450375685-6ab5b6ba6fac?q=80&w=2070&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1665495472099-b1a1a67a0376?q=80&w=2070&auto=format&fit=crop'
+        ]
     },
 ];
 
@@ -284,7 +295,7 @@ const clientData = [
 type Translation = typeof translations['en'];
 type Language = 'en' | 'es';
 
-const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
+const Hero = React.memo(({ t, lang, isMobile }: { t: Translation; lang: Language, isMobile: boolean }) => {
     const heroSectionRef = useRef<HTMLElement>(null);
     const wrapperRef = useRef<SVGGElement>(null);
     const mouse = useRef({ x: 0, y: 0, smoothX: 0, smoothY: 0, diff: 0 }).current;
@@ -294,6 +305,14 @@ const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
     const codedWordRef = useRef(null);
     
     useEffect(() => {
+        // Disable heavy particle animation on mobile devices for performance.
+        if (isMobile) {
+            // Ensure any existing particles are removed if resizing from desktop to mobile
+            particles.forEach(p => p.remove());
+            particles.length = 0;
+            return;
+        }
+
         let animationFrameId: number;
         
         const onMouseMove = (e: MouseEvent) => {
@@ -363,7 +382,7 @@ const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
             particles.forEach(p => p.remove());
             particles.length = 0;
         };
-    }, [mouse, particles]);
+    }, [isMobile]);
 
     useEffect(() => {
         gsap.registerPlugin(TextPlugin);
@@ -418,7 +437,7 @@ const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
     return (
         <section className="hero" ref={heroSectionRef}>
             <div className="hero-background"></div>
-            <div className="hero-overlay">
+            <div className={`hero-overlay ${isMobile ? 'hero-overlay--mobile' : ''}`}>
                 <div className="hero-content">
                     <h1>
                         <span>Kvadra</span>
@@ -433,37 +452,39 @@ const Hero = React.memo(({ t, lang }: { t: Translation; lang: Language }) => {
                 </div>
             </div>
             
-            <p className="hero-interact-hint">{t.heroInteractHint}</p>
+            {!isMobile && <p className="hero-interact-hint">{t.heroInteractHint}</p>}
             
-            <svg className="goo-svg" aria-hidden="true">
-                <defs>
-                    {/* High-quality filter for desktop */}
-                    <filter id="gooey">
-                        <feGaussianBlur 
-                            in="SourceGraphic" 
-                            stdDeviation="25" 
-                        />
-                        <feColorMatrix 
-                            type="matrix" 
-                            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -7" 
-                        />
-                    </filter>
-                    {/* A lighter, more performant filter for mobile devices */}
-                    <filter id="gooey-mobile">
-                        <feGaussianBlur
-                            in="SourceGraphic"
-                            stdDeviation="15"
-                        />
-                        <feColorMatrix
-                            type="matrix"
-                            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 25 -6"
-                        />
-                    </filter>
-                    <mask id="mask">
-                        <g ref={wrapperRef}></g>
-                    </mask>
-                </defs>
-            </svg>
+            {!isMobile && (
+                <svg className="goo-svg" aria-hidden="true">
+                    <defs>
+                        {/* High-quality filter for desktop */}
+                        <filter id="gooey">
+                            <feGaussianBlur 
+                                in="SourceGraphic" 
+                                stdDeviation="25" 
+                            />
+                            <feColorMatrix 
+                                type="matrix" 
+                                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -7" 
+                            />
+                        </filter>
+                        {/* A lighter, more performant filter for mobile devices */}
+                        <filter id="gooey-mobile">
+                            <feGaussianBlur
+                                in="SourceGraphic"
+                                stdDeviation="15"
+                            />
+                            <feColorMatrix
+                                type="matrix"
+                                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 25 -6"
+                            />
+                        </filter>
+                        <mask id="mask">
+                            <g ref={wrapperRef}></g>
+                        </mask>
+                    </defs>
+                </svg>
+            )}
         </section>
     );
 });
@@ -733,103 +754,258 @@ const About = ({ t }: { t: Translation }) => {
     );
 };
 
-const ClientShowcase = ({ t, lang }: { t: Translation; lang: Language }) => {
-    const showcaseTitleRef = useRef(null);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [isHovered, setIsHovered] = useState(false);
-    const intervalRef = useRef<number | null>(null);
+const ClientList = ({ t, lang }: { t: Translation, lang: Language }) => {
+    const componentRoot = useRef<HTMLDivElement>(null);
+    // FIX: Moved hooks to the top level of the component to fix React error #321 (Invalid hook call).
+    const activeClientIndex = useRef<number | null>(null);
+    const currentImageIndex = useRef(0);
+    const activeImageRef = useRef<HTMLImageElement | null>(null);
+    const carouselHandlers = useRef<{ handleNext: () => void, handlePrev: () => void } | null>(null);
 
     useEffect(() => {
-        const titleEl = showcaseTitleRef.current;
-        if (titleEl) {
-            const masterTl = gsap.timeline({ repeat: -1, repeatDelay: 5, delay: 1.5 });
+        if (!componentRoot.current) return;
 
-            masterTl.to(titleEl, {
-                duration: 1.0,
-                text: {
-                    value: "!#$&*?%",
-                    delimiter: ""
-                },
-                ease: "none"
-            })
-            .to(titleEl, {
-                duration: 1.0,
-                text: t.showcaseTitle,
-                ease: "none"
-            }, "+=0.2");
+        gsap.registerPlugin(CustomEase, Flip);
+        CustomEase.create("osmo-ease", "0.625, 0.05, 0, 1");
+
+        gsap.defaults({
+            ease: "osmo-ease",
+            duration: 0.725
+        });
+
+        const listItems = componentRoot.current.querySelectorAll(".main-title__item");
+        const imageItems = componentRoot.current.querySelectorAll(".main-img__item");
+        const overlayItems = componentRoot.current.querySelectorAll(".overlay-item");
+        const overlayNav = componentRoot.current.querySelector(".overlay-nav");
+        const navItems = componentRoot.current.querySelectorAll("[data-overlay='nav-item']");
+        const closeButton = componentRoot.current.querySelector("[data-overlay='close']");
+        const headings = componentRoot.current.querySelectorAll(".main-title");
+
+        let activeListItem: Element | null = null;
+        
+        function openOverlay(index: number) {
+            listItems.forEach(item => item.classList.remove("active"));
+            activeListItem = listItems[index];
+            activeListItem.classList.add("active");
+
+            const title = activeListItem.querySelector(".main-title");
+            if (!title) return;
+            const titleState = Flip.getState(title, { props: "fontSize" });
+
+            const image = imageItems[index].querySelector(".image") as HTMLImageElement;
+            if (!image) return;
+            const imageState = Flip.getState(image);
+
+            const overlayItem = overlayItems[index];
+            const content = overlayItem.querySelector(".overlay-row");
+
+            gsap.set(overlayItem, { display: "block", autoAlpha: 1 });
+            gsap.fromTo(content, { autoAlpha: 0 }, { autoAlpha: 1, delay: 0.5 });
+
+            const textTarget = overlayItem.querySelector("[data-overlay='text-target']");
+            const imgTarget = overlayItem.querySelector("[data-overlay='img-target']");
+
+            if(textTarget) textTarget.appendChild(title);
+            if(imgTarget) imgTarget.appendChild(image);
+            
+            Flip.from(titleState, { duration: 0.725, ease: "osmo-ease" });
+            Flip.from(imageState, { duration: 0.725, ease: "osmo-ease" });
+
+            // --- Setup Carousel ---
+            activeClientIndex.current = index;
+            currentImageIndex.current = 0;
+            activeImageRef.current = image;
+
+            const changeImage = (newSrc: string) => {
+                const img = activeImageRef.current;
+                if (!img) return;
+                
+                img.style.opacity = '0';
+                setTimeout(() => {
+                    img.src = newSrc;
+                    img.onload = () => {
+                        img.style.opacity = '1';
+                        img.onload = null;
+                    };
+                }, 300);
+            };
+
+            const handleNext = () => {
+                if (activeClientIndex.current === null) return;
+                const clientImages = clientData[activeClientIndex.current].images;
+                const newIndex = (currentImageIndex.current + 1) % clientImages.length;
+                currentImageIndex.current = newIndex;
+                changeImage(clientImages[newIndex]);
+            };
+
+            const handlePrev = () => {
+                if (activeClientIndex.current === null) return;
+                const clientImages = clientData[activeClientIndex.current].images;
+                const newIndex = (currentImageIndex.current - 1 + clientImages.length) % clientImages.length;
+                currentImageIndex.current = newIndex;
+                changeImage(clientImages[newIndex]);
+            };
+            
+            const prevButton = overlayItem.querySelector('.carousel-button.prev');
+            const nextButton = overlayItem.querySelector('.carousel-button.next');
+            if (prevButton && nextButton) {
+                prevButton.addEventListener('click', handlePrev);
+                nextButton.addEventListener('click', handleNext);
+                carouselHandlers.current = { handlePrev, handleNext };
+            }
+            
+            gsap.set(overlayNav,{display: "flex" });
+            gsap.fromTo(navItems, { yPercent: 110 }, { yPercent: 0, stagger: 0.1 });
+            
+            gsap.set(imageItems,{ autoAlpha: 0})
+            
+            listItems.forEach((listItem, i) => {
+                if (i !== index) {
+                    const otherTitle = listItem.querySelector(".main-title");
+                    gsap.to(otherTitle, { yPercent: 100, autoAlpha: 0, duration: 0.45, delay: 0.2 - i * 0.05 });
+                }
+            });
         }
-    }, [t.showcaseTitle]);
 
-    const nextSlide = () => {
-        setCurrentIndex(prev => (prev === clientData.length - 1 ? 0 : prev + 1));
-    };
+        function closeOverlay() {
+            if (!activeListItem) return;
 
-    const prevSlide = () => {
-        setCurrentIndex(prev => (prev === 0 ? clientData.length - 1 : prev - 1));
-    };
+            const index = Array.from(listItems).indexOf(activeListItem);
+            const overlayItem = overlayItems[index];
+            const title = overlayItem.querySelector("[data-overlay='text-target'] .main-title");
+            const image = overlayItem.querySelector("[data-overlay='img-target'] .image");
+            const overlayContent = overlayItem.querySelector(".overlay-row");
 
-    useEffect(() => {
-        if (!isHovered) {
-            intervalRef.current = window.setInterval(() => {
-                nextSlide();
-            }, 5000);
+            // --- Teardown Carousel ---
+            const prevButton = overlayItem.querySelector('.carousel-button.prev');
+            const nextButton = overlayItem.querySelector('.carousel-button.next');
+            if (prevButton && nextButton && carouselHandlers.current) {
+                prevButton.removeEventListener('click', carouselHandlers.current.handlePrev);
+                nextButton.removeEventListener('click', carouselHandlers.current.handleNext);
+                carouselHandlers.current = null;
+            }
+            activeClientIndex.current = null;
+            activeImageRef.current = null;
+
+            if (!title || !image || !overlayContent) return;
+
+            const titleState = Flip.getState(title, { props: "fontSize" });
+            const imageState = Flip.getState(image);
+
+            gsap.to(navItems, { yPercent: 110, onComplete: () => { if (overlayNav) (overlayNav as HTMLElement).style.display = "none"; } });
+            gsap.to(overlayContent, { autoAlpha: 0, onComplete: () => { (overlayItem as HTMLElement).style.display = "none"; } });
+            
+            const buttonContainer = activeListItem.querySelector(".button");
+            if(buttonContainer) buttonContainer.appendChild(title);
+            if(imageItems[index]) imageItems[index].appendChild(image);
+            gsap.set(imageItems[index], { autoAlpha: 1 });
+            // Reset image src to the first one for next time
+            (image as HTMLImageElement).src = clientData[index].images[0];
+
+            Flip.from(titleState, { duration: 0.725, ease: "osmo-ease" });
+            Flip.from(imageState, { duration: 0.725, ease: "osmo-ease" });
+
+            activeListItem.classList.remove("active");
+            activeListItem = null;
+
+            gsap.to(headings, { yPercent: 0, autoAlpha: 1, delay: 0.3, stagger: 0.05 });
         }
+        
+        const clickListeners: (() => void)[] = [];
+        listItems.forEach((listItem, index) => {
+            const listener = () => openOverlay(index);
+            listItem.addEventListener("click", listener);
+            clickListeners.push(() => listItem.removeEventListener('click', listener));
+        });
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") closeOverlay();
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+        closeButton?.addEventListener("click", closeOverlay);
+        
+        const mouseEnterListeners: (()=>void)[] = [];
+        listItems.forEach((listItem, i) => {
+            const listener = () => {
+                gsap.set(imageItems, { autoAlpha: 0 });
+                gsap.set(imageItems[i], { autoAlpha: 1 });
+            };
+            listItem.addEventListener("mouseenter", listener);
+            mouseEnterListeners.push(() => listItem.removeEventListener('mouseenter', listener));
+        });
+        
+        // Initial state
+        gsap.set(imageItems, { autoAlpha: 0 });
+        if(imageItems.length > 0) gsap.set(imageItems[0], { autoAlpha: 1 });
+
 
         return () => {
-            if (intervalRef.current) {
-                window.clearInterval(intervalRef.current);
-            }
+            clickListeners.forEach(remove => remove());
+            mouseEnterListeners.forEach(remove => remove());
+            document.removeEventListener("keydown", handleKeyDown);
+            closeButton?.removeEventListener("click", closeOverlay);
         };
-    }, [isHovered, currentIndex]);
+
+    }, []);
 
     return (
-        <section id="showcase" className="content-section client-showcase-section">
-            <h2 className="section-title">
-                <span ref={showcaseTitleRef}>{t.showcaseTitle}</span>
-            </h2>
-            <div 
-                className="showcase-deck"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-            >
-                {clientData.map((client, index) => {
-                    const offset = (index - currentIndex + clientData.length) % clientData.length;
-                    
-                    const isFront = offset === 0;
-                    const isVisible = offset > 0 && offset < 3; // Show 2 cards behind
-
-                    const style: React.CSSProperties = {
-                        transform: 'translateY(50px) scale(0.8) rotate(0deg)', // Default hidden state
-                        opacity: 0,
-                        zIndex: clientData.length - offset,
-                        pointerEvents: isFront ? 'auto' : 'none',
-                    };
-
-                    if (isFront) {
-                        style.transform = 'translateY(0) scale(1) rotate(0deg)';
-                        style.opacity = 1;
-                    } else if (isVisible) {
-                        const y = offset * -25;
-                        const scale = 1 - (offset * 0.1);
-                        const rotation = (index - currentIndex) * 6;
-                        style.transform = `translateY(${y}px) scale(${scale}) rotate(${rotation}deg)`;
-                        style.opacity = 1;
-                    }
-
-                    return (
-                        <div className="testimonial-card" key={index} style={style}>
-                            <div className="client-logo" role="img" aria-label={`${client.name} logo`}>{client.logo}</div>
-                            <p className="testimonial-quote">"{client.quote[lang]}"</p>
-                            <div className="testimonial-author">
-                                <strong>{client.name}</strong>, {client.title[lang]}
+        <section id="showcase" className="content-section client-list-section" ref={componentRoot}>
+            <div className="cloneable">
+                <div className="page">
+                    <div className="main">
+                        <div className="main-col">
+                            <div className="main-img__list">
+                                {clientData.map((client, index) => (
+                                    <div className="main-img__item" key={`img-${index}`}>
+                                        <img src={client.images[0]} alt={client.name} className="image" />
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    );
-                })}
-            </div>
-            <div className="slider-nav">
-                <button onClick={prevSlide} aria-label={t.showcasePrev}>&larr;</button>
-                <button onClick={nextSlide} aria-label={t.showcaseNext}>&rarr;</button>
+                        <div className="main-col">
+                            <ul className="main-title__list">
+                                {clientData.map((client, index) => (
+                                    <li className="main-title__item" key={`title-${index}`}>
+                                        <button className="button">
+                                            <h2 className="main-title">{client.name}</h2>
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div className="overlay-wrap">
+                    {clientData.map((client, index) => (
+                        <div className="overlay-item" key={`overlay-${index}`}>
+                            <div className="overlay-hero">
+                                <div className="overlay-title__wrap" data-overlay="text-target"></div>
+                            </div>
+                            <div className="overlay-row">
+                                <div className="overlay-col col-right">
+                                    <div className="client-carousel">
+                                        <div className="carousel-image-container" data-overlay="img-target">
+                                          {/* Image is dynamically placed here */}
+                                        </div>
+                                        <button className="carousel-button prev" aria-label={t.showcasePrev}>‹</button>
+                                        <button className="carousel-button next" aria-label={t.showcaseNext}>›</button>
+                                    </div>
+                                </div>
+                                <div className="overlay-col col-left">
+                                    <p className="paragraph">
+                                        "{client.quote[lang]}"
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                    <div className="overlay-nav">
+                        <div data-overlay="nav-item">
+                            <button className="button text" data-overlay="close">{t.modalClose}</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     );
@@ -945,84 +1121,16 @@ const Footer = ({ t }: { t: Translation }) => (
     </footer>
 );
 
-const CustomCursor = () => {
-    const cursorOuterRef = useRef<HTMLDivElement>(null);
-    const cursorInnerRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const onMouseMove = (e: MouseEvent) => {
-            const { clientX, clientY } = e;
-            if (cursorOuterRef.current && cursorInnerRef.current) {
-                gsap.to(cursorOuterRef.current, {
-                    x: clientX,
-                    y: clientY,
-                    duration: 0.4,
-                    ease: 'power3.out'
-                });
-                gsap.to(cursorInnerRef.current, {
-                    x: clientX,
-                    y: clientY,
-                    duration: 0.1,
-                    ease: 'power3.out'
-                });
-            }
-        };
-
-        const handleMouseEnter = () => {
-            if (cursorOuterRef.current) {
-                gsap.to(cursorOuterRef.current, {
-                    width: 60,
-                    height: 60,
-                    duration: 0.3
-                });
-            }
-        };
-
-        const handleMouseLeave = () => {
-            if (cursorOuterRef.current) {
-                gsap.to(cursorOuterRef.current, {
-                    width: 32,
-                    height: 32,
-                    duration: 0.3
-                });
-            }
-        };
-
-        document.addEventListener('mousemove', onMouseMove);
-
-        const interactiveElements = document.querySelectorAll('a, button, input');
-        interactiveElements.forEach(el => {
-            el.addEventListener('mouseenter', handleMouseEnter);
-            el.addEventListener('mouseleave', handleMouseLeave);
-        });
-
-        return () => {
-            document.removeEventListener('mousemove', onMouseMove);
-            interactiveElements.forEach(el => {
-                el.removeEventListener('mouseenter', handleMouseEnter);
-                el.removeEventListener('mouseleave', handleMouseLeave);
-            });
-        };
-    }, []);
-
-    return (
-        <>
-            <div className="custom-cursor-outer" ref={cursorOuterRef}></div>
-            <div className="custom-cursor-inner" ref={cursorInnerRef}></div>
-        </>
-    );
-};
-
 // FIX: Move SiteContent outside of the App component to prevent re-renders on state change.
 // This is critical for preventing the Hero animation from restarting on scroll.
 // FIX: Wrap SiteContent in a div and attach the forwarded ref to it. This resolves a subtle TypeScript error by providing a clearer component boundary for the parent `SmoothScroll` component.
-const SiteContent = React.memo(React.forwardRef<HTMLDivElement, { t: Translation, lang: Language }>(({ t, lang }, ref) => (
+const SiteContent = React.memo(React.forwardRef<HTMLDivElement, { t: Translation, lang: Language, isMobile: boolean }>(({ t, lang, isMobile }, ref) => (
     <div ref={ref}>
         <main>
-            <Hero t={t} lang={lang} />
+            <Hero t={t} lang={lang} isMobile={isMobile} />
             <Services t={t} lang={lang} />
             <About t={t} />
-            <ClientShowcase t={t} lang={lang} />
+            <ClientList t={t} lang={lang} />
             <IdeaGenerator t={t} lang={lang} />
             <Contact t={t} />
         </main>
@@ -1099,7 +1207,7 @@ const App = () => {
     
             window.scrollTo({
                  top: offsetPosition,
-                 // behavior: "smooth" // Let the custom smooth scroll handle it
+                 behavior: isMobile ? "smooth" : "auto"
             });
         }
     };
@@ -1108,13 +1216,15 @@ const App = () => {
 
     return (
         <>
-            <CustomCursor />
             <Header t={t} onLanguageToggle={handleLanguageToggle} lang={language} onNavClick={handleNavClick} theme={theme} onThemeToggle={handleThemeToggle} isVisible={isHeaderVisible} />
-            {isMobile ? 
-                <SiteContent ref={mainRef} t={t} lang={language} /> : 
-                // FIX: The SmoothScroll component requires a `children` prop. The SiteContent component must be nested within SmoothScroll to be passed as a child, resolving the "Property 'children' is missing" error.
-                <SmoothScroll><SiteContent ref={mainRef} t={t} lang={language} /></SmoothScroll>
-            }
+            {isMobile ? (
+                <SiteContent ref={mainRef} t={t} lang={language} isMobile={isMobile} />
+            ) : (
+                // FIX: The SmoothScroll component requires a `children` prop. Nesting SiteContent within SmoothScroll satisfies this prop requirement, resolving the TypeScript error.
+                <SmoothScroll>
+                    <SiteContent ref={mainRef} t={t} lang={language} isMobile={isMobile} />
+                </SmoothScroll>
+            )}
         </>
     );
 };
