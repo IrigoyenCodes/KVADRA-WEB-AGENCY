@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -1220,7 +1221,8 @@ const App = () => {
             {isMobile ? (
                 <SiteContent ref={mainRef} t={t} lang={language} isMobile={isMobile} />
             ) : (
-                // FIX: The SmoothScroll component requires a `children` prop. Nesting SiteContent within SmoothScroll satisfies this prop requirement, resolving the TypeScript error.
+                // FIX: The SmoothScroll component requires a 'children' prop, which was missing. 
+                // The SiteContent component has been nested within SmoothScroll to provide the necessary children and resolve the error.
                 <SmoothScroll>
                     <SiteContent ref={mainRef} t={t} lang={language} isMobile={isMobile} />
                 </SmoothScroll>

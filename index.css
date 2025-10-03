@@ -1228,8 +1228,4 @@ html[data-theme='dark'] .theme-switcher .moon {
     .overlay-nav {
         justify-content: center;
     }
-
-    .overlay-nav [data-overlay="nav-item"]:first-of-type {
-        display: none;
-    }
 }
