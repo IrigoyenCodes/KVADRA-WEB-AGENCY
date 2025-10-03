@@ -260,9 +260,9 @@ const clientData = [
             es: 'Creamos todo el sitio web de ecommerce para KOR, una marca de ropa deportiva emergente, implementamos una interfaz interactiva para que los empleados/directores puedan editar toda la base de datos desde su teléfono'
         },
         images: [
-            'https://images.unsplash.com/photo-1549476464-373921717541?q=80&w=1887&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1517809292312-5b8b1b01de53?q=80&w=1887&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1614272993243-8b9e69b4226e?q=80&w=1887&auto=format&fit=crop'
+            'images/kor-1.jpg',
+            'images/kor-2.jpg',
+            'images/kor-3.jpg'
         ]
     },
     {
@@ -272,9 +272,9 @@ const clientData = [
             es: 'Diseñamos y desarrollamos un sitio web elegante y premium para exhibir su portafolio arquitectónico, generando un aumento del 32% en clientes potenciales calificados y elevando su presencia de marca en el mercado de lujo.'
         },
         images: [
-            'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1974&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1517841380369-114d2a13e2d6?q=80&w=1974&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1552561435-24285ee1105b?q=80&w=1974&auto=format&fit=crop'
+            'images/ova-1.jpg',
+            'images/ova-2.jpg',
+            'images/ova-3.jpg'
         ]
     },
     {
@@ -284,9 +284,9 @@ const clientData = [
             es: 'Desarrollamos un sistema de gestión de inventario personalizado que transformó sus operaciones—reduciendo el tiempo de procesamiento en un 60% y prácticamente eliminando errores manuales.'
         },
         images: [
-            'https://images.unsplash.com/photo-1586528116311-06924151d14a?q=80&w=2070&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1573450375685-6ab5b6ba6fac?q=80&w=2070&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1665495472099-b1a1a67a0376?q=80&w=2070&auto=format&fit=crop'
+            'images/innovate-1.jpg',
+            'images/innovate-2.jpg',
+            'images/innovate-3.jpg'
         ]
     },
 ];
